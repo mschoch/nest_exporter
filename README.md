@@ -15,3 +15,7 @@ A tool to let you integrate your Nest devices with a prometheus system.
 ```
 
 Point prometheus to scrape this endpoint (defaults to port 9264)
+
+## License
+
+Apache License Version 2.0

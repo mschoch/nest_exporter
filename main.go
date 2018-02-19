@@ -46,6 +46,10 @@ var (
 		Name: "nest_thermostat_ambient_temperature_celcius",
 		Help: "nest_thermostat_ambient_temperature_celcius Ambient temperature at the Nest thermostat",
 	}, []string{"structure", "device"})
+	ambientTempF = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Name: "nest_thermostat_ambient_temperature_fahrenheit",
+		Help: "nest_thermostat_ambient_temperature_fahrenheit Ambient temperature at the Nest thermostat",
+	}, []string{"structure", "device"})
 	humidity = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "nest_thermostat_humidity",
 		Help: "nest_thermostat_humidity Humidity at the Nest thermostat",
@@ -53,6 +57,10 @@ var (
 	targetTempC = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "nest_thermostat_target_temperature_celcius",
 		Help: "nest_thermostat_target_temperature_celcius Target temperature at the Nest thermostat",
+	}, []string{"structure", "device"})
+	targetTempF = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Name: "nest_thermostat_target_temperature_fahrenheit",
+		Help: "nest_thermostat_target_temperature_fahrenheit Target temperature at the Nest thermostat",
 	}, []string{"structure", "device"})
 	hvacState = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "nest_thermostat_hvac_state",
@@ -78,6 +86,8 @@ func main() {
 	reg.Register(errCount)
 	reg.Register(ambientTempC)
 	reg.Register(targetTempC)
+	reg.Register(ambientTempF)
+	reg.Register(targetTempF)
 	reg.Register(humidity)
 	reg.Register(hvacState)
 	reg.Register(emergencyHeatState)
@@ -124,10 +134,18 @@ func pollNest() {
 			"structure": structureIDToName[v.StructureID],
 			"device":    v.Name,
 		}).Set(float64(v.AmbientTemperatureC))
+		ambientTempF.With(prometheus.Labels{
+			"structure": structureIDToName[v.StructureID],
+			"device":    v.Name,
+		}).Set(float64(v.AmbientTemperatureF))
 		targetTempC.With(prometheus.Labels{
 			"structure": structureIDToName[v.StructureID],
 			"device":    v.Name,
 		}).Set(float64(v.TargetTemperatureC))
+		targetTempF.With(prometheus.Labels{
+			"structure": structureIDToName[v.StructureID],
+			"device":    v.Name,
+		}).Set(float64(v.TargetTemperatureF))
 		humidity.With(prometheus.Labels{
 			"structure": structureIDToName[v.StructureID],
 			"device":    v.Name,
